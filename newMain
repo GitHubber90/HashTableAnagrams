@@ -1,0 +1,90 @@
+import time
+
+class HashTable:
+    # Constructor with optional initial capacity parameter.
+    # Assigns all buckets with an empty list.
+    def __init__(self, initial_capacity=4000000):
+        # initialize the hash table with empty bucket list entries.
+        self.table = []
+        for i in range(initial_capacity):
+            self.table.append([])
+
+    def load_factor(self):
+        print(len(self.table))
+        return 354984/len(self.table)
+
+    def hashing(self, key):
+        return key%len(self.table)
+        #return key%10
+       # return key%len(self.table)+2
+
+    # Inserts a new item into the hash table.
+    def insert(self, item):
+        # get the bucket list where this item will go.
+        #bucket = hash(item) % len(self.table)
+        #bucket = hash(item)%10
+        bucket=hash(item) % len(self.table) + 2
+        bucket_list = self.table[bucket]
+
+        # insert the item to the end of the bucket list.
+        bucket_list.append(item)
+
+    # Searches for an item with matching key in the hash table.
+    # Returns the item if found, or None if not found.
+    def search(self, key):
+        global counter
+        # get the bucket list where this key would be.
+        #bucket = hash(key) % len(self.table)
+        #bucket = hash(key)%10
+        bucket=hash(key) % len(self.table) + 2
+        bucket_list = self.table[bucket]
+
+        # search for the key in the bucket list
+        if key in bucket_list:
+            # find the item's index and return the item that is in the bucket list.
+
+            counter+=1
+            item_index = bucket_list.index(key)
+            return True
+        else:
+            # the key is not found.
+            return None
+
+
+###############################################################################################
+###############################################################################################
+###############################################################################################
+###############################################################################################
+
+newHash = HashTable()
+counter =0
+
+
+
+def anagrams(word, prefix=""):#This code checks how many anagrams a word has
+
+    if len(word) <= 1:
+        str = prefix + word
+        if newHash.search(str) == True:
+            print(str)
+
+    else:
+        #print('whatttttttttt')
+        for i in range(len(word)):
+           # print('doing foor loop')
+            cur = word[i: i + 1]
+            before = word[0: i] # letters before cur
+            after = word[i + 1:] # letters after cur
+
+            if cur not in before: # Check if permutations of cur have not been generated.
+                anagrams(before + after, prefix + cur)
+
+
+with open("words.txt", 'r') as file:
+    start_time = time.time()
+    for line in file:
+        english_word= line.lower().split()
+        newHash.insert(english_word[0])
+    anagrams('spot')
+    print("--- %s seconds ---" % (time.time() - start_time))
+    print(newHash.load_factor())
